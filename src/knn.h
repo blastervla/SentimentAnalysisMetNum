@@ -11,4 +11,10 @@ public:
 
     Vector predict(SparseMatrix X);
 private:
+    unsigned int n_neighbors;
+    SparseMatrix X;
+    Matrix y;
+
+    double predict_row(Vector row);
+    std::vector<int> nSortedIndexes(Vector v, unsigned int n);
 };
