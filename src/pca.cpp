@@ -7,7 +7,7 @@ using namespace std;
 
 PCA::PCA(unsigned int n_components)
 {
-	this->n_components=n_components
+	this->n_components=n_components;
 }
 
 void PCA::fit(Matrix X)
@@ -20,22 +20,22 @@ void PCA::fit(Matrix X)
 MatrixXd PCA::transform(SparseMatrix X)
 {	
 	MatrixXd res;
-	
-	Matrix medias=X.colwise().mean();
-	
 	MatrixXd copia =X;
 	
-	copia=X.rowwise()-medias; //centro los valores de las medias
+	Eigen::VectorXd medias=copia.colwise().mean();
 	
-	Matrix M=X.transpose()*X; 
+	copia.rowwise()-=medias.transpose(); //centro los valores de las medias
+	
+	MatrixXd M=copia.transpose()*copia; 
 	
 	M=M/(X.rows()-1);//creo la matriz de covarianza
 	
-	std::pair<Eigen::VectorXd, Matrix> base get_first_eigenvalues(M,M.rows()); //la diagonalizo
-	Matrix V=base.second(); //me quedo con la matriz con autovectores en columna (los primeros son los mas significativos, los de mayor autovalor asociado). Notar es tambien la matriz de cambio de base
+	std::pair<Eigen::VectorXd, Matrix> base = get_first_eigenvalues(M,M.rows()); //la diagonalizo
 	
-	res=X*(V.leftcols(this->n_components); //hago el cambio de base teniendo en cuenta las primeras componentes principales
+	MatrixXd V=base.second; //me quedo con la matriz con autovectores en columna (los primeros son los mas significativos, los de mayor autovalor asociado). Notar es tambien la matriz de cambio de base
 	
-	return res
+	res=X*(V.leftCols(this->n_components)); //hago el cambio de base teniendo en cuenta las primeras componentes principales
+	
+	return res;
   //throw std::runtime_error("Sin implementar");
 }
