@@ -17,4 +17,5 @@ private:
 
     double predict_row(Vector row);
     std::vector<int> nSortedIndexes(Vector v, unsigned int n);
+    double mostAppearingValue(std::vector<int> &sortedIndexes, Matrix &values);
 };
