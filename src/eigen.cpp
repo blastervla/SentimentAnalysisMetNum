@@ -15,7 +15,7 @@ pair<double, Vector> power_iteration(const Matrix &X, unsigned num_iter, double 
     }
 
     eigenvalue =
-            (b.transpose() * X * b)(0) / b.squaredNorm(); // (0) gets the scalar value as multiplication is a 1x1 matrix
+            (b.transpose() * X * b)(0) / b.norm(); // (0) gets the scalar value as multiplication is a 1x1 matrix
     return make_pair(eigenvalue, b / b.norm());
 }
 
