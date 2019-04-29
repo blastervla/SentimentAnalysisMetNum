@@ -65,9 +65,9 @@ double KNNClassifier::mostAppearingValue(std::vector<int> &sortedIndexes, Matrix
 }
 
 double KNNClassifier::predict_row(Vector row) {
-    SparseMatrix X = KNNClassifier::X - Matrix::Identity(KNNClassifier::X.rows(), KNNClassifier::X.cols()) * row;
-    X = X.cwiseProduct(X); // This should be like multiplying each element by itself
-    Vector sums = X * Vector(KNNClassifier::X.cols(), 1); // This is like summing all rows
+    SparseMatrix A = KNNClassifier::X - Vector(KNNClassifier::X.rows(), 1) * row.transpose();
+    A = A.cwiseProduct(A); // This should be like multiplying each element by itself
+    Vector sums = A * Vector(KNNClassifier::X.cols(), 1); // This is like summing all rows
 
     // We get the n_neighbors indexes with lowest values
     vector<int> sortedIndexes = KNNClassifier::nSortedIndexes(sums, KNNClassifier::n_neighbors);
