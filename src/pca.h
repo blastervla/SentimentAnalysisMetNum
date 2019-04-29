@@ -9,4 +9,6 @@ public:
 
     Eigen::MatrixXd transform(SparseMatrix X);
 private:
+	MatrixXd base;
+	unsigned int n_components;
 };
