@@ -1,4 +1,5 @@
 #pragma once
+
 #include "types.h"
 
 class PCA {
@@ -8,7 +9,8 @@ public:
     void fit(Matrix X);
 
     Eigen::MatrixXd transform(SparseMatrix X);
+
 private:
-	MatrixXd base;
-	unsigned int n_components;
+    MatrixXd base;
+    unsigned int n_components;
 };

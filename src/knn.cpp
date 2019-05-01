@@ -1,9 +1,7 @@
 #include <algorithm>
-//#include <chrono>
+#include <chrono>
 #include <iostream>
 #include "knn.h"
-//#include <map>
-//#include <set>
 
 using namespace std;
 
@@ -31,50 +29,21 @@ vector<int> KNNClassifier::nSortedIndexes(Vector v, unsigned int n) {
     sortedIndexes.shrink_to_fit();
     return sortedIndexes;
 }
-/*
-template<typename A, typename B>
-std::pair<B,A> flip_pair(const std::pair<A,B> &p)
-{
-    return std::pair<B,A>(p.second, p.first);
-}
 
-template<typename A, typename B>
-std::multimap<B,A> flip_map(const std::map<A,B> &src)
-{
-    std::multimap<B,A> dst;
-    std::transform(src.begin(), src.end(), std::inserter(dst, dst.begin()),
-                   flip_pair<A,B>);
-    return dst;
-}
-
-double KNNClassifier::mostAppearingValue(std::vector<int> &sortedIndexes, Matrix &values) {
-    map<double, int> valueApparitions;
-    for (auto i = sortedIndexes.begin(); i < sortedIndexes.end(); i++) {
-        double currentValue = values.coeff(0, 1);
-
-        auto val = valueApparitions.find(currentValue);
-        if (val == valueApparitions.end()) {
-            // Add count
-            val->second = 1;
-        } else {
-            val->second++;
-        }
-    }
-
-    return flip_map(valueApparitions).end()->second; // We flip map so that it's ordered in ascending order by value.
-}
-*/
 bool KNNClassifier::mostAppearingValue(std::vector<int> &sortedIndexes, Matrix &values) {
-    int pos,neg=0;
-    for( auto it=sortedIndexes.begin(); it<sortedIndexes.end(); ++it){
-			if(values(*it,0)== true) {++pos;} //supuse que la matriz y es una columna
-			if(values(*it,0)== false) {++neg;} //supuse que la matriz y es una columna
-	}
-	if (pos>neg) return true; //true es positivo.
-	if (neg>pos) return false;
-	if (pos==neg) return true; //ESTO ES ARBITRARIO, CAMBIAR LUEGO SEGUN SE QUIERA PROBAR
-}
+    int pos = 0;
+    int neg = 0;
 
+    for (auto it = sortedIndexes.begin(); it < sortedIndexes.end(); ++it) {
+        if (values(*it, 0) == true) { ++pos; } //supuse que la matriz y es una columna
+        if (values(*it, 0) == false) { ++neg; } //supuse que la matriz y es una columna
+    }
+    if (pos >= neg) { // Por default, si hay empate, la tomamos como positiva. Se puede rever para testear
+        return true; //true es positivo.
+    } else {
+        return false;
+    }
+}
 
 
 bool KNNClassifier::predict_row(Vector row) {
