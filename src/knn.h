@@ -15,7 +15,7 @@ private:
     SparseMatrix X;
     Matrix y;
 
-    double predict_row(Vector row);
+    bool predict_row(Vector row);
     std::vector<int> nSortedIndexes(Vector v, unsigned int n);
-    double mostAppearingValue(std::vector<int> &sortedIndexes, Matrix &values);
+    bool mostAppearingValue(std::vector<int> &sortedIndexes, Matrix &values);
 };

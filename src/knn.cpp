@@ -2,8 +2,8 @@
 //#include <chrono>
 #include <iostream>
 #include "knn.h"
-#include <map>
-#include <set>
+//#include <map>
+//#include <set>
 
 using namespace std;
 
@@ -31,7 +31,7 @@ vector<int> KNNClassifier::nSortedIndexes(Vector v, unsigned int n) {
     sortedIndexes.shrink_to_fit();
     return sortedIndexes;
 }
-
+/*
 template<typename A, typename B>
 std::pair<B,A> flip_pair(const std::pair<A,B> &p)
 {
@@ -63,8 +63,21 @@ double KNNClassifier::mostAppearingValue(std::vector<int> &sortedIndexes, Matrix
 
     return flip_map(valueApparitions).end()->second; // We flip map so that it's ordered in ascending order by value.
 }
+*/
+bool KNNClassifier::mostAppearingValue(std::vector<int> &sortedIndexes, Matrix &values) {
+    int pos,neg=0;
+    for( auto it=sortedIndexes.begin(); it<sortedIndexes.end(); ++it){
+			if(values(*it,0)== true) {++pos;} //supuse que la matriz y es una columna
+			if(values(*it,0)== false) {++neg;} //supuse que la matriz y es una columna
+	}
+	if (pos>neg) return true; //true es positivo.
+	if (neg>pos) return false;
+	if (pos==neg) return true; //ESTO ES ARBITRARIO, CAMBIAR LUEGO SEGUN SE QUIERA PROBAR
+}
 
-double KNNClassifier::predict_row(Vector row) {
+
+
+bool KNNClassifier::predict_row(Vector row) {
     SparseMatrix A = KNNClassifier::X - Vector(KNNClassifier::X.rows(), 1) * row.transpose();
     A = A.cwiseProduct(A); // This should be like multiplying each element by itself
     Vector sums = A * Vector(KNNClassifier::X.cols(), 1); // This is like summing all rows
@@ -79,7 +92,7 @@ Vector KNNClassifier::predict(SparseMatrix X) {
     auto ret = Vector(X.rows());
 
     for (unsigned k = 0; k < X.rows(); ++k) {
-        ret(k) = 0;
+        ret(k) = this->predict_row(X.row(k));
     }
 
     return ret;
