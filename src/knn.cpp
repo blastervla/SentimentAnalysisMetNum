@@ -3,30 +3,62 @@
 #include <iostream>
 #include "knn.h"
 
+#include <pybind11/pybind11.h>
+
 using namespace std;
 
+#include <iostream>
+#include <vector>
+#include <numeric>      // std::iota
+#include <algorithm>    // std::sort
+
 KNNClassifier::KNNClassifier(unsigned int n_neighbors) {
-    KNNClassifier::n_neighbors = n_neighbors;
+    this->n_neighbors = n_neighbors;
 }
 
 void KNNClassifier::fit(SparseMatrix X, Matrix y) {
     // We should apply PCA here
-    KNNClassifier::X = X;
-    KNNClassifier::y = y;
+    this->X = X;
+    this->y = y;
 }
 
 vector<int> KNNClassifier::nSortedIndexes(Vector v, unsigned int n) {
-    vector<int> sortedIndexes(v.size(), 0);
-    for (int i = 0; i != sortedIndexes.size(); i++) {
-        sortedIndexes[i] = i;
+    vector<int> sortedIndexes(n, 0);
+//    for (int i = 0; i != sortedIndexes.size(); i++) {
+//        sortedIndexes[i] = i;
+//    }
+//    sort(sortedIndexes.begin(), sortedIndexes.end(),
+//         [&](const int &a, const int &b) {
+//             return (v(a) > v(b));
+//         }
+//    );
+//    sortedIndexes.resize(n);
+//    sortedIndexes.shrink_to_fit();
+
+//    for (int i = 0; i < n; ++i) {
+//        cout << "At index " << sortedIndexes[i] << ": " << v(sortedIndexes[i]) << endl;
+//    }
+
+    // initialize original index locations
+    vector<size_t> idx(v.size());
+    cout << v.size() << endl;
+    iota(idx.begin(), idx.end(), 0);
+
+    // sort indexes based on comparing values in v
+    sort(idx.begin(), idx.end(),
+         [&v](size_t i1, size_t i2) {return v(i1) < v(i2);});
+
+
+    int j = 0;
+    for (auto i: idx) {
+        if (j < 10) {
+            cout << "At index " << i << ": " << v(i) << endl;
+            sortedIndexes[j] = v(i);
+            j++;
+        }else {
+            break;
+        }
     }
-    sort(sortedIndexes.begin(), sortedIndexes.end(),
-         [&](const int &a, const int &b) {
-             return (v[a] > v[b]);
-         }
-    );
-    sortedIndexes.resize(n);
-    sortedIndexes.shrink_to_fit();
     return sortedIndexes;
 }
 
@@ -47,13 +79,13 @@ bool KNNClassifier::mostAppearingValue(std::vector<int> &sortedIndexes, Matrix &
 
 
 bool KNNClassifier::predict_row(Vector row) {
-    SparseMatrix A = KNNClassifier::X - Vector(KNNClassifier::X.rows(), 1) * row.transpose();
+    SparseMatrix A = X - Vector(X.rows(), 1) * row.transpose();
     A = A.cwiseProduct(A); // This should be like multiplying each element by itself
-    Vector sums = A * Vector(KNNClassifier::X.cols(), 1); // This is like summing all rows
+    Vector sums = A * Vector(X.cols(), 1); // This is like summing all rows
 
     // We get the n_neighbors indexes with lowest values
-    vector<int> sortedIndexes = KNNClassifier::nSortedIndexes(sums, KNNClassifier::n_neighbors);
-    return KNNClassifier::mostAppearingValue(sortedIndexes, KNNClassifier::y);
+    vector<int> sortedIndexes = nSortedIndexes(sums, n_neighbors);
+    return mostAppearingValue(sortedIndexes, y);
 }
 
 Vector KNNClassifier::predict(SparseMatrix X) {
