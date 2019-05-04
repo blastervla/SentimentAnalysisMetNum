@@ -24,8 +24,7 @@ pair<double, Vector> power_iteration(const Matrix &X, unsigned num_iter, double 
 void deinflate(Matrix &X, Vector& v) {
     Vector u = v;
     u(0) -= v.norm();
-    u = u / u.norm();
-    Matrix H = Matrix::Identity(X.rows(), X.cols()) - (2 * u * u.transpose());
+    Matrix H = Matrix::Identity(X.rows(), X.cols()) - ((2 * u * u.transpose()) / u.squaredNorm());
     X = H * X * H.transpose();
     X = X.block(1, 1, X.rows() - 1, X.cols() - 1); // Get submatrix eliminating first column and row.
 }
@@ -33,7 +32,7 @@ void deinflate(Matrix &X, Vector& v) {
 pair<Vector, Matrix> get_first_eigenvalues(const Matrix &X, unsigned num, unsigned num_iter, double epsilon) {
     Matrix A(X);
     Vector eigvalues(num); // Vector con autovalores
-    Matrix eigvectors(A.rows(), num); // Matriz con autovectores como columnas
+    Matrix eigvectors = Matrix::Zero(A.rows(), num); // Matriz con autovectores como columnas
 
     for (int i = 0; i < num; i++) {
         pair<double, Vector> res = power_iteration(A, num_iter, epsilon);
@@ -43,7 +42,7 @@ pair<Vector, Matrix> get_first_eigenvalues(const Matrix &X, unsigned num, unsign
         Vector zeroVect = Vector::Zero(X.rows() - res.second.size());
         vec_joined << res.second, zeroVect;
 
-        eigvectors.col(i) = vec_joined / vec_joined.norm();
+        eigvectors.col(i) = vec_joined;
         deinflate(A, res.second);
     }
 
