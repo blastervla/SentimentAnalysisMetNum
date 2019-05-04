@@ -24,30 +24,10 @@ void KNNClassifier::fit(SparseMatrix X, Matrix y) {
 
 vector<int> KNNClassifier::nSortedIndexes(Vector v, unsigned int n) {
     vector<int> sortedIndexes(n, 0);
-//    for (int i = 0; i != sortedIndexes.size(); i++) {
-//        sortedIndexes[i] = i;
-//    }
-//    sort(sortedIndexes.begin(), sortedIndexes.end(),
-//         [&](const int &a, const int &b) {
-//             return (v(a) > v(b));
-//         }
-//    );
-//    sortedIndexes.resize(n);
-//    sortedIndexes.shrink_to_fit();
-
-//    for (int i = 0; i < n; ++i) {
-//        cout << "At index " << sortedIndexes[i] << ": " << v(sortedIndexes[i]) << endl;
-//    }
 
     // initialize original index locations
     vector<int> idx(v.size());
-    //cout << v.size() << endl;
     iota(idx.begin(), idx.end(), 0);
-    /*for (int i=0; i<10; ++i) {
-        cout << "Iota: " << idx[i] << endl;
-        cout << "V: " << v(i) << endl;
-        cout << "V2: " << v[i] << endl;
-    }*/
 
     // sort indexes based on comparing values in v
     sort(idx.begin(), idx.end(),
@@ -55,7 +35,6 @@ vector<int> KNNClassifier::nSortedIndexes(Vector v, unsigned int n) {
 
 
     for (int i=0; i<n; ++i) {
-        //cout << "At index " << idx[i] << ": " << v(idx[i]) << endl;
         sortedIndexes[i] = idx[i];
     }
     return sortedIndexes;
@@ -78,32 +57,9 @@ bool KNNClassifier::mostAppearingValue(std::vector<int> &sortedIndexes, Matrix &
 
 
 bool KNNClassifier::predict_row(Vector row) {
-	cout <<endl<< "asdf: ";
-    for (int i = 0; i < 10; ++i)
-    {
-    	cout << ", " << X.coeff(i, i);
-    }
-    cout << endl;
-
-    //cout<< "Columnas: "<<(Vector(X.rows(), 1) * row.transpose()).cols()<< endl;
-   // cout<< "Filas: "<<(Vector(X.rows(), 1) * row.transpose()).rows()<< endl;
-    //SparseMatrix A = X - (Vector(X.rows(), 1) * row.transpose());
     Matrix A = Matrix(X).rowwise() - row.transpose();
-    cout << "Pre: ";
-    for (int i = 0; i < 10; ++i)
-    {
-    	cout << ", " << A.coeff(i, i);
-    }
-    cout << endl;
 
     A = A.cwiseProduct(A); // This should be like multiplying each element by itself
-    
-    cout << "Post: ";
-    for (int i = 0; i < 10; ++i)
-    {
-    	cout << ", " << A.coeff(i, i);
-    }
-    cout << endl;
 
     Vector sums = A * Vector(X.cols(), 1); // This is like summing all rows
 

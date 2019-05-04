@@ -38,7 +38,7 @@ pair<Vector, Matrix> get_first_eigenvalues(const Matrix &X, unsigned num, unsign
         pair<double, Vector> res = power_iteration(A, num_iter, epsilon);
         eigvalues[i] = res.first;
         eigvectors.col(i) = res.second;
-        deinflate(A);
+        deinflate(A, res.second);
     }
 
     return make_pair(eigvalues, eigvectors);
