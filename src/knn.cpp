@@ -40,24 +40,23 @@ vector<int> KNNClassifier::nSortedIndexes(Vector v, unsigned int n) {
 //    }
 
     // initialize original index locations
-    vector<size_t> idx(v.size());
-    cout << v.size() << endl;
+    vector<int> idx(v.size());
+    //cout << v.size() << endl;
     iota(idx.begin(), idx.end(), 0);
+    /*for (int i=0; i<10; ++i) {
+        cout << "Iota: " << idx[i] << endl;
+        cout << "V: " << v(i) << endl;
+        cout << "V2: " << v[i] << endl;
+    }*/
 
     // sort indexes based on comparing values in v
     sort(idx.begin(), idx.end(),
-         [&v](size_t i1, size_t i2) {return v(i1) < v(i2);});
+         [&v](int i1, int i2) {return v(i1) < v(i2);});
 
 
-    int j = 0;
-    for (auto i: idx) {
-        if (j < 10) {
-            cout << "At index " << i << ": " << v(i) << endl;
-            sortedIndexes[j] = v(i);
-            j++;
-        }else {
-            break;
-        }
+    for (int i=0; i<n; ++i) {
+        //cout << "At index " << idx[i] << ": " << v(idx[i]) << endl;
+        sortedIndexes[i] = idx[i];
     }
     return sortedIndexes;
 }
@@ -79,8 +78,33 @@ bool KNNClassifier::mostAppearingValue(std::vector<int> &sortedIndexes, Matrix &
 
 
 bool KNNClassifier::predict_row(Vector row) {
-    SparseMatrix A = X - Vector(X.rows(), 1) * row.transpose();
+	cout <<endl<< "asdf: ";
+    for (int i = 0; i < 10; ++i)
+    {
+    	cout << ", " << X.coeff(i, i);
+    }
+    cout << endl;
+
+    //cout<< "Columnas: "<<(Vector(X.rows(), 1) * row.transpose()).cols()<< endl;
+   // cout<< "Filas: "<<(Vector(X.rows(), 1) * row.transpose()).rows()<< endl;
+    //SparseMatrix A = X - (Vector(X.rows(), 1) * row.transpose());
+    Matrix A = Matrix(X).rowwise() - row.transpose();
+    cout << "Pre: ";
+    for (int i = 0; i < 10; ++i)
+    {
+    	cout << ", " << A.coeff(i, i);
+    }
+    cout << endl;
+
     A = A.cwiseProduct(A); // This should be like multiplying each element by itself
+    
+    cout << "Post: ";
+    for (int i = 0; i < 10; ++i)
+    {
+    	cout << ", " << A.coeff(i, i);
+    }
+    cout << endl;
+
     Vector sums = A * Vector(X.cols(), 1); // This is like summing all rows
 
     // We get the n_neighbors indexes with lowest values

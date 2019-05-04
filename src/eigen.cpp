@@ -19,11 +19,13 @@ pair<double, Vector> power_iteration(const Matrix &X, unsigned num_iter, double 
     return make_pair(eigenvalue, b);
 }
 
-void deinflate(Matrix &X) {
-    Vector u(X.rows(), 0);
-    u[0] = X.col(0).norm();
+// TODO: Implementar un deinflate como lo dado en el labo (podemos experimentar con esto)
+
+void deinflate(Matrix &X, Vector& v) {
+    Vector u = v;
+    u(0) -= v.norm();
     Matrix H = Matrix::Identity(X.rows(), X.cols()) - (2 * u * u.transpose()) / u.squaredNorm();
-    X = H * X;
+    X = H * X * H.transpose();
     X = X.block(1, 1, X.rows() - 1, X.cols() - 1); // Get submatrix eliminating first column and row.
 }
 
