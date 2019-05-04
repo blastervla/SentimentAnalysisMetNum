@@ -9,8 +9,8 @@ PCA::PCA(unsigned int n_components) {
     this->n_components = n_components;
 }
 
-void PCA::fit(Matrix X) {
-    MatrixXd copia = X;
+void PCA::fit(SparseMatrix X) {
+    MatrixXd copia = Matrix(X);
 
     Eigen::VectorXd medias = copia.colwise().mean();
     copia.rowwise() -= medias.transpose(); //centro los valores de las medias

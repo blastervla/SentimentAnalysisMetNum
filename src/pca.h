@@ -6,7 +6,7 @@ class PCA {
 public:
     PCA(unsigned int n_components);
 
-    void fit(Matrix X);
+    void fit(SparseMatrix X);
 
     Eigen::MatrixXd transform(SparseMatrix X);
 
