@@ -21,12 +21,16 @@ pair<double, Vector> power_iteration(const Matrix &X, unsigned num_iter, double 
 
 // TODO: Implementar un deinflate como lo dado en el labo (podemos experimentar con esto)
 
-void deinflate(Matrix &X, Vector& v) {
+void deinflateHouseholder(Matrix &X, Vector& v) {
     Vector u = v;
     u(0) -= v.norm();
     Matrix H = Matrix::Identity(X.rows(), X.cols()) - ((2 * u * u.transpose()) / u.squaredNorm());
     X = H * X * H.transpose();
     X = X.block(1, 1, X.rows() - 1, X.cols() - 1); // Get submatrix eliminating first column and row.
+}
+
+void deinflateLabo(Matrix &X, Vector& v, double l1) {
+    X = X - (l1 * v * v.transpose());
 }
 
 pair<Vector, Matrix> get_first_eigenvalues(const Matrix &X, unsigned num, unsigned num_iter, double epsilon) {
@@ -38,12 +42,9 @@ pair<Vector, Matrix> get_first_eigenvalues(const Matrix &X, unsigned num, unsign
         pair<double, Vector> res = power_iteration(A, num_iter, epsilon);
         eigvalues[i] = res.first;
 
-        Vector vec_joined(X.rows());
-        Vector zeroVect = Vector::Zero(X.rows() - res.second.size());
-        vec_joined << res.second, zeroVect;
-
-        eigvectors.col(i) = vec_joined;
-        deinflate(A, res.second);
+        eigvectors.col(i) = res.second;
+        //deinflateHouseholder(A, res.second);
+        deinflateLabo(A, res.second, res.first);
     }
 
     return make_pair(eigvalues, eigvectors);
