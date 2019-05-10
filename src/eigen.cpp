@@ -11,7 +11,8 @@ pair<double, Vector> power_iteration(const Matrix &X, unsigned num_iter, double 
     double eigenvalue;
 
     for (int i = 0; i < num_iter; i++) {
-        b = X * b / (X * b).norm();
+        Vector xb = X * b;
+        b = xb / (xb.norm());
     }
 
     eigenvalue =
