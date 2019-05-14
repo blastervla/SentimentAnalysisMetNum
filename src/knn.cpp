@@ -49,7 +49,11 @@ bool KNNClassifier::mostAppearingValue(std::vector<int> &sortedIndexes, Matrix &
         if (values(*it, 0) == false) { ++neg; } //supuse que la matriz y es una columna
     }
     if (pos >= neg) { // Por default, si hay empate, la tomamos como positiva. Se puede rever para testear
-        return true; //true es positivo.
+        if(pos == neg){
+            return values(sortedIndexes[0],0);
+        }else{
+            return true; //true es positivo.
+        }
     } else {
         return false;
     }
