@@ -61,7 +61,7 @@ bool KNNClassifier::predict_row(Vector row) {
 
     A = A.cwiseProduct(A); // This should be like multiplying each element by itself
 
-    Vector sums = A * Vector(X.cols(), 1); // This is like summing all rows
+    Vector sums = A * Vector(X.cols(), 1).setOnes(); // This is like summing all rows
 
     // We get the n_neighbors indexes with lowest values
     vector<int> sortedIndexes = nSortedIndexes(sums, n_neighbors);
