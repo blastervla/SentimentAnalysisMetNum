@@ -48,7 +48,7 @@ bool KNNClassifier::mostAppearingValue(std::vector<int> &sortedIndexes, Matrix &
         if (values(*it, 0) == true) { ++pos; } //supuse que la matriz y es una columna
         if (values(*it, 0) == false) { ++neg; } //supuse que la matriz y es una columna
     }
-    if (pos >= neg) { // Por default, si hay empate, la tomamos como positiva. Se puede rever para testear
+    if (pos >= neg) { //si hay empate tomamos el valor del vecino más cercano
         if(pos == neg){
             return values(sortedIndexes[0],0);
         }else{
